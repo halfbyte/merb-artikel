@@ -120,6 +120,12 @@ end
   puts @parent.object_id == child.parent.object_id
 end
 
+TODO:
+  - Router
+  - Views
+  - Formhelper
+  - Deployment
+  
 
 
 [fazit]
