@@ -1,18 +1,125 @@
-Die Geschichte von Merb beginnt am 20.10.2007. Ezra Zygmuntowich, einer der Gründer von Engine Yard, einem auf Ruby Rails spezialisierten Webhoster, ist unzufrieden mit Rails. Insbesondere die Probleme, die bei Rails auftauchen, wenn man eine Anwendung mit vielen großen Dateiuploads baut, nerven ihn. Um diesem Problem endgültig einmal Herr zu werden, entwickelt er einen minimalen Request-Handler für den Ruby-Webserver mongrel (der auch für Rails sehr gern eingesetzt wird), flanscht noch die eRb(embedded Ruby)-Template-Engine an und nennt das ganze schlicht merb (mongrel + erb).
+Wer heute das Stichwort Ruby hört, denkt auch immer automatisch an Ruby on Rails, das Framework für Datenbank-basierte Webanwendungen, welches sich seinen festen Platz im Web-Umfeld erobert hat und inzwischen in Version 2.2 vorliegt. Kaum eine Open-Source-Software dürfte in den letzten Jahren eine ähnliche Wirkung gehabt haben: Fast jede relevante Programmiersprache dürfte inzwischen ihren Rails-Clon haben und die Ideen, die Rails so erfolgreich gemacht haben, wie z.B. Convention over Configuration, haben in den letzten 3 Jahren die Softwareentwicklung auch in anderen Bereichen nachhaltig verändert. Rails selbst hat sich seit der ersten Veröffentlichung in 2004 konstant weiterentwickelt und tut dies weiterhin mit recht hoher Geschwindigkeit - Zuletzt wurden insbesondere die oft kritisierten recht hohen Anforderungen an die Serverhardware, was sowohl Prozessorleistung, als auch Speicherverbrauch angeht, unter die Lupe genommen. Als eines der meist beachtesten Ergebnisse dieser Bemühungen wurde Rails 2.2 komplett als threadsafe deklariert. Eine geeignete Umgebnung (wie z.B. JRuby) vorausgesetzt, können Rails-Anwendungen dadurch wesentlich effizienter betrieben werden.
 
-Inzwischen, nach zahlreichen Anläufen, mit erstaunlich vielen Wandlungen zwischen drin, ist das Webframework merb bei der magischen Versionszahl 1.0 angekommen und eignet sich somit nach Ansicht der Entwickler für den produktiven Einsatz.
+Die damals fehlende Thread-Safety war es, die Ezra Zygmuntowicz im Herbst 2006 veranlasst, sich ernsthaft mit der Entwicklung einer Alternative zu Rails zu beschäftigen. Das Grundproblem: Da Rails-Anwendungen grundsätzlich immer nur einen Request pro Prozess abarbeiten können, werden insbesondere lang laufenende Requests (wie z.B. große Datei-Uploads) schnell zu einem Problem für einen Anwendungsserver, der ja nur eine endliche Zahl an Rails-Requests starten kann. 
 
-Doch warum sollte man das tun? Was für Vorteile bietet Merb gegenüber Rails? Wo liegen die Unterschiede, aber auch die Gemeinsamkeiten?
+Am 10. Oktober 2006 veröffentlicht Zygmuntowicz die erste, sehr minimale Version seiner Alternative, die zunächst nur einen Request-Handler für den Ruby-Webserver Mongrel darstellt, der in der Lage ist, HTML, genau wie Rails über ERb (Embedded Ruby)-Templates auszuliefern. Er nennt das ganze Merb, was für Mongrel + Erb stehen soll.
 
-Ähnlich wie Rails hat auch Merb einige Grundlegende Philosophien, die sich durch das gesamte Framework ziehen. Hier wären vor allem zu nennen:
+Am 8. November 2008, also etwas mehr als zwei Jahre später, kann Zygmuntowicz auf seinem Blog die Veröffentlichung der Version 1.0 von Merb ankündigen. Von dem anfänglichen Minimalismus ist oberflächlich nicht viel übriggeblieben, bei Merb handelt es sich inzwischen um ein ausgewachsenes Framework, welches sich im Featureumfang durchaus mit Rails messen kann.
 
-- Optimiert für hohe Performanz. Von Anfang an war es das erklärte Ziel der Entwickler, das der Kern von Merb deutlich performanter zu Werke gehen sollte als dies bei Rails der Fall ist. Aus diesem Ziel lassen sich viele andere Designentscheidungen ableiten.
+Die Unterschiede zwischen Rails und Merb werden deutlich, wenn man sich die Zielsetzung der Merb-Entwickler ansieht - Diese Prinzipien ziehen sich wie ein roter Faden durch das gesamte Framework:
+
+- Optimiert für hohe Performanz. Von Anfang an war es das erklärte Ziel der Entwickler, das der Kern von Merb deutlich performanter zu Werke gehen sollte als dies bei Rails der Fall ist. Aus diesem Ziel lassen sich viele andere Designentscheidungen ableiten. Wie bereits berichtet liegt ein Schwerpunkt der momentanen Rails-Entwicklung ebenfalls in der Verbesserung der Performance, allerdings spielte diese beim ursprünglichen Design von Rails keine so große Rolle, was die nachträgliche Optimierung oft schwierig gestaltet.
 
 - Keine Magie. Während Rails an vielen Stellen intensiven Gebrauch von Rubys Metaprogramming-Fähigkeiten macht, wurde bei Merb versucht, weitestgehend darauf zu verzichten. Das Ergebnis ist ein Framework, dessen Quelltext deutlich einfacher lesbar ist. An vielen Stellen dürfte diese Designentscheidung auch zu Performance-Gewinnen beitragen.
 
-- Flexibilität. Während Rails den EINEN, richtigen Weg vorgibt, wie Web-Anwendungen auszusehen haben, welches Javascript-Framework zu verwenden ist, wie die Dateistruktur einer Anwendung aussieht etc., hält sich Merb an dieser Stelle vornehm zurück. Es gibt zwar auch hier Vorgaben, deren Befolgung die Entwicklung besonders schnell und komfortabel macht, aber es ist recht einfach, diese Vorgaben zu ignorieren, bzw. anzupassen. So existieren Anbindungen für diverse OR-Mapper (unter anderem auch Rails' ActiveRecord), Javascript-Frameworks (u.a. das zur Zeit sehr beliebte jQuery von John Resig). Ausserdem kann die Dateistruktur der Merb-Anwendungen weitgehend den eigenen Bedürfnissen angepasst werden, im Extremfall lässt sich eine Merb-Anwendung sogar in einer einzigen Datei ablegen.
+- Flexibilität. Während Rails den einen, richtigen Weg vorgibt, wie Web-Anwendungen auszusehen haben, welches Javascript-Framework zu verwenden ist, wie die Dateistruktur einer Anwendung aussieht etc., hält sich Merb an dieser Stelle vornehm zurück. Es gibt zwar auch hier Vorgaben, deren Befolgung die Entwicklung besonders schnell und komfortabel macht, aber es ist (was bei Rails so nicht der Fall ist) recht einfach, diese Vorgaben zu ignorieren, bzw. anzupassen. So existieren Anbindungen für diverse OR-Mapper (unter anderem auch Rails' ActiveRecord), Javascript-Frameworks (u.a. das zur Zeit sehr beliebte jQuery von John Resig). Ausserdem kann die Dateistruktur der Merb-Anwendungen weitgehend den eigenen Bedürfnissen angepasst werden, im Extremfall lässt sich eine Merb-Anwendung sogar in einer einzigen Datei ablegen.
 
-- Hackability. Hier zahl die bereits genannte "Keine Magie"-Strategie ein, zusätzlich gibt es sehr klare Vorgaben im Merb-Projekt, wie Code zu dokumentieren ist, ausserdem gibt es eine Unterscheidung zwischen "public" und "private" APIs, die schon in der Dokumentation deutlich machen, auf welche Konstrukte man sich langfristig verlassen kan und welche man besser nicht anfasst.
+- Hackbarkeit. Es soll für die Benutzer von Merb wesentlich einfacher sein, den Quellcode von Merb zu verstehen, zu erweitern und anzupassen. Hier zahlt die bereits genannte "Keine Magie"-Strategie ein, zusätzlich gibt es sehr klare Vorgaben im Merb-Projekt, wie Code zu dokumentieren ist, ausserdem gibt es eine Unterscheidung zwischen "public" und "private" APIs, die schon in der Dokumentation deutlich machen, auf welche Konstrukte man sich langfristig verlassen kann und welche man besser nicht anfasst.
+
+
+[OR-Mapper]
+
+Merb ist OR-Mapper-Agnostisch. Es ist für jeden OR-Mapper nur sehr wenig Glue-Code notwendig um ihn in Merb nutzen zu können. Für Rails-Umsteiger böte sich sicher zunächst an, ActiveRecord weiter zu verwenden, was dank der des merb_activerecord-Plugins kein Problem ist. 
+
+Der empfohlene OR-Mapper für Merb ist allerdings DataMapper, der auch vom Merb-Team entwickelt wird. Die Benutzung von DataMapper ist für Programmierer, die sich bereits mit ActiveRecord auskennen, sehr leicht zu verstehen, allerdings gibt es ein paar Grundsätzliche Unterschiede:
+
+- DataMapper-Objekte sind keine Subklassen einer abstrakten Klasse (ActiveRecord::Base), sondern bekommen die Funktionalität über ein Modul injiziert, so dass man beliebige Klassenhierachien aufbauen und über Datamapper persistieren kann. 
+
+- Bei DataMapper werden die Datenbank-Tabellen durch Definitionen im Modell festgelegt, und nicht, wie bei ActiveRecord genau umgekehrt, die Modell-Attribute durch die Struktur der Datenbank-Tabellen. Dies hat einige Implikationen:
+- Es ist wesentlich einfacher, Datentypen zu definieren, die von der Datenbank nicht direkt unterstützt werden.
+- Die Definition der Datenbankstruktur ist nicht, wie bei ActiveRecord, zwischen den Datenbank-Tabellen und den Modellklassen verteilt. Bei ActiveRecord werden zwar die Spaltennamen und die Datentypen der Spalten automatisch auf Attribute der Modellklasse gemappt, alles andere, wie z.B. Beziehungen zwischen Tabellen bzw. Objekten, müssen dann aber im Code der Modelklasse definiert werden. Bei DataMapper passiert beides in der Modellklasse. (Siehe Beispiele 1 und 2)
+- DataMapper kann, ausgehend von den Attribut-Definitionen in den Modell-Klassen automatisch die Datenbank-Tabellen erzeugen, ohne dass wie bei ActiveRecord eine Migration erzeugt werden muss. Diese Auto-Migrationen können sowohl Destruktiv (durch komplettes Löschen und Neu anlegen der Tablle) als auch Non-Destruktiv durchgeführt werden (durch ALTER TABLE-Aufrufe oder ähnliches), wobei die letztere Variante nicht immer zum gewünschten Ergebnis führt. Daher kennt auch DataMapper so etwas wie die von ActiveRecord bekannten Migrationen (Beispiel 3), so dass z.B. zusätzlich Daten-Migrationen vorgenommen werden können. Im produktiven Betrieb wird man diese Auto-Migrationen wohl selten einsetzen können.
+- DataMapper führt intern eine sog. Identity Map, welche die Ruby-Objekte 1:1 auf Datenbank-Zeilen mappt, was zu einer effizienteren Speicherauslastung führen kann und gleichzeitig die Benutzung von Standard-Sprachfeatures auf DataMapper-Objekten erst möglich macht. (Siehe Beispiel 4)
+
+[Beispiel 1 (Active Record-Migration und Klassendefinition)]
+
+# Datei: db/migrate/20080729095225_create_universes.rb
+class CreateUniverses < ActiveRecord::Migration
+  def self.up
+    create_table :universes do |t|
+      t.text :name
+      t.timestamps
+    end
+  end
+  
+  def self.down
+    drop_table :universes
+  end
+end
+------------
+# Datei: db/migrate/20080729095236_create_stars.rb
+class CreateStars < ActiveRecord::Migration
+  def self.up
+    create_table :stars do |t|
+      t.text :name
+      t.integer :universe_id
+      t.float :color
+      t.float :x
+      t.float :y
+      t.timestamps
+    end
+  end
+  def self.down
+    drop_table :stars
+  end
+end
+------------
+# Datei: app/models/universe.rb
+class Universe < ActiveRecord::Base
+  has_many :stars
+end
+------------
+# Datei: app/models/stars.rb
+class Stars < ActiveRecord::Base
+  belongs_to :universe
+end
+
+[Beispiel 2: Datamapper Klassendefinition]
+
+# Datei: app/models/universe.rb
+class Universe
+  include DataMapper::Resource
+  property :id, Serial
+  property :name, String
+  has n, :stars
+end
+------------
+# Datei: app/models/star.rb
+class Star
+  include DataMapper::Resource
+  property :id, Serial
+  property :name, String
+  property :color, Float
+  property :x, Float
+  property :y, Float
+  belongs_to :universe
+end
+
+
+[Beispiel 3: DataMapper-Migration]
+# Datei: schema/migrations/001_add_color_to_stars.rb
+migration 1, :add_color_to_stars  do
+  up do
+    modify_table :stars do |table|
+      table.add_column :color, Float
+    end
+  end
+  down do
+    modify_table :stars do |table|
+      table.drop_column :color
+    end    
+  end
+end
+
+[Beispiel 4: Identity-Maps in Aktion]
+@parent = Tree.find(:first, :conditions => ['name = ?', 'bob'])
+ 
+@parent.children.each do |child|
+  # Liefert in ActiveRecord false, da neues Objekt erzeugt wird.
+  # DataMapper liefert true, da über Identity-Map abgefangen
+  puts @parent.object_id == child.parent.object_id
+end
+
 
 
 [fazit]
