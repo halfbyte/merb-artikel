@@ -1,0 +1,31 @@
+Die Geschichte von Merb beginnt am 20.10.2007. Ezra Zygmuntowich, einer der Gründer von Engine Yard, einem auf Ruby Rails spezialisierten Webhoster, ist unzufrieden mit Rails. Insbesondere die Probleme, die bei Rails auftauchen, wenn man eine Anwendung mit vielen großen Dateiuploads baut, nerven ihn. Um diesem Problem endgültig einmal Herr zu werden, entwickelt er einen minimalen Request-Handler für den Ruby-Webserver mongrel (der auch für Rails sehr gern eingesetzt wird), flanscht noch die eRb(embedded Ruby)-Template-Engine an und nennt das ganze schlicht merb (mongrel + erb).
+
+Inzwischen, nach zahlreichen Anläufen, mit erstaunlich vielen Wandlungen zwischen drin, ist das Webframework merb bei der magischen Versionszahl 1.0 angekommen und eignet sich somit nach Ansicht der Entwickler für den produktiven Einsatz.
+
+Doch warum sollte man das tun? Was für Vorteile bietet Merb gegenüber Rails? Wo liegen die Unterschiede, aber auch die Gemeinsamkeiten?
+
+Ähnlich wie Rails hat auch Merb einige Grundlegende Philosophien, die sich durch das gesamte Framework ziehen. Hier wären vor allem zu nennen:
+
+- Optimiert für hohe Performanz. Von Anfang an war es das erklärte Ziel der Entwickler, das der Kern von Merb deutlich performanter zu Werke gehen sollte als dies bei Rails der Fall ist. Aus diesem Ziel lassen sich viele andere Designentscheidungen ableiten.
+
+- Keine Magie. Während Rails an vielen Stellen intensiven Gebrauch von Rubys Metaprogramming-Fähigkeiten macht, wurde bei Merb versucht, weitestgehend darauf zu verzichten. Das Ergebnis ist ein Framework, dessen Quelltext deutlich einfacher lesbar ist. An vielen Stellen dürfte diese Designentscheidung auch zu Performance-Gewinnen beitragen.
+
+- Flexibilität. Während Rails den EINEN, richtigen Weg vorgibt, wie Web-Anwendungen auszusehen haben, welches Javascript-Framework zu verwenden ist, wie die Dateistruktur einer Anwendung aussieht etc., hält sich Merb an dieser Stelle vornehm zurück. Es gibt zwar auch hier Vorgaben, deren Befolgung die Entwicklung besonders schnell und komfortabel macht, aber es ist recht einfach, diese Vorgaben zu ignorieren, bzw. anzupassen. So existieren Anbindungen für diverse OR-Mapper (unter anderem auch Rails' ActiveRecord), Javascript-Frameworks (u.a. das zur Zeit sehr beliebte jQuery von John Resig). Ausserdem kann die Dateistruktur der Merb-Anwendungen weitgehend den eigenen Bedürfnissen angepasst werden, im Extremfall lässt sich eine Merb-Anwendung sogar in einer einzigen Datei ablegen.
+
+- Hackability. Hier zahl die bereits genannte "Keine Magie"-Strategie ein, zusätzlich gibt es sehr klare Vorgaben im Merb-Projekt, wie Code zu dokumentieren ist, ausserdem gibt es eine Unterscheidung zwischen "public" und "private" APIs, die schon in der Dokumentation deutlich machen, auf welche Konstrukte man sich langfristig verlassen kan und welche man besser nicht anfasst.
+
+
+[fazit]
+
+Merb ist inzwischen ausgereift genug, um produktiv eingesetzt zu werden. Während man merkt, das die Entwickler eine Menge guter Schlüsse aus der Analyse der Probleme, die bei Rails existieren, bzw. existieren, hat Rails, was die Ausgereiftheit angeht, doch noch einen deutlichen Vorsprung. Und so lohnt sich ein Einsatz von Merb aus Sicht des Autors vor allem dann, 
+
+[Mitmachen]
+
+Merb hat eine sehr aktive Entwickler-Gemeinschaft. Man wird sehr offen aufgenommen und bekommt als Mitwirkender sehr schnell Commit-Rechte auf dem gemeinsamen GitHub-Repository.
+
+
+[Quellen]
+
+- merb-peepcode-buch
+- merbivore.com
+
