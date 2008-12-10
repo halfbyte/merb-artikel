@@ -1,0 +1,18 @@
+<h1>Resource routes</h1>
+<p><%= resource(Star.first, Planet.first) %></p>
+<h1>URL routes</h1>
+<p><%= url(:star_planet, Star.first, Planet.first) %></p>
+
+
+
+<%= form_for(Star.new, :action => resource(:stars)) do %>
+ 
+  <p>
+    <%= text_field :name, :label => "Name"  %>
+  </p>
+ 
+ 
+  <p>
+    <%= submit "Update" %>
+  </p>
+<% end =%>

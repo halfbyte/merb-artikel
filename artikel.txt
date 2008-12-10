@@ -182,42 +182,127 @@ end
 
 [Rendern und dann noch was]
 
-Etwas, das in Rails gar nicht möglich ist, bietet die "render_and_call"-Methode, mit der man
+Etwas, das in Rails gar nicht möglich ist, bietet die "render_then_call"-Methode, mit der man Prozesse, die an einer Action hängen, erst nach dem Ausliefern einer Antwortseite ausführen kann. Dies ist in Rails nur mit speziellen Lösungen wie BackgroundJob / DelayedJob etc. möglich.
 
+def show
+  render_then_call(display @star) do
+		Stats.tick(@star)
+	end
+end
+
+Allerding sollte man darauf achten, dass diese Methoden weiterhin im Kontext des Merb-Prozesses laufen und sich daher diese Variante nur für kurzlaufende Prozesse eignet, mit deren Ausführung man dennoch nicht die Auslieferung zum Client behindern möchte. Länger laufende Prozesse werden dann besser wieder über z.B. über Queues gelöst.
+
+Zuletzt noch ein Hinweis auf ein sehr interessantes Merb-Plugin namens merb-action-args, welches standardmäßig mit Merb 1.0 installiert wird. Dieses ermöglicht es, Request-Parameter direkt als Methoden-Parameter zu empfangen.
+
+def show
+  display Start.find(params[id])
+end
+
+def show(id)
+  display Star.find(id)
+end
+
+Da zur Umsetzung dieser Funktionalität einiges an Ruby-Introspektions-Magie notwendig ist, kann dieses an sich sehr schöne Plugin leider nicht vorbehaltlos empfohlen werden (was vermutlich auch der Grund ist, warum es sich nicht um eine Standard-Funktionalität von merb-core handelt)
 
 [Router]
 
+Das URL-Routing, also die Zuordnung von URLs zu den Controller-Klassen und Action-Methoden, ist eines der Sahnestücke von Merb. In Merb ist es üblich, deutlich mehr Logik bereits im Routing auszudrücken, als dies in Rails der Fall ist.
+
+Die Syntax zur Erzeugung von Routen ist etwas anders als in Rails, zumindest für Nicht-REST-Routen, ist aber doch recht einfach verständlich, wenn man die Rails-Routen kennt.
+
+map.foo "/foo/:foo_id", :controller => 'foo', :action => :show
+
+match("/foo/:foo_id").to(:controller => 'foo', :action => :show).name(:foo)
+
+Der Parameter :foo_id wird automatisch aus der URL extrahiert und dem Request als Parameter angefügt.
+
+Zusätzlich zu dieser einfachen Variante kann man nun dem match-Aufruf aber auch noch weitere Parameter als Hash übergeben, so z.B.:
+
+match(:path => "/foo", :user_agent => /iPhone/).to(:controller => 'foo', :action => :index_for_iphone)
+
+Als Parameter können hier alle Methoden, die im Request-Objekt zur Verfügung gestellt werden, benutzt werden, z.B. :domain, :subdomains, :user_agent, etc.
+
+Genau wie bei Rails ist es möglich, REST-Ressourcen zu definieren und sogar zu verschachteln. Auch hier ist die Syntax leicht anders:
+
+map.resources :stars do |star|
+  star.resources :planets
+end
+
+resources :stars do
+  resources :planets
+end
+
+Zusätzlich zu der deutlich gesteigerten Flexibilität der Merb-Routen (deren komplette Beschreibung den Umfang dieses Artikels sprengen würde) ist die Umsetzung der Routen offensichtlich deutlich performanter als in Rails (wobei der Vorsprung durch die Änderungen in den letzten Rails-Versionen deutlich verringert wurde).
+
+
+[Erzeugung von URLs]
+
+Anders als bei Rails werden durch den Router keine benannten Methoden erzeugt. Statt dessen gibt es zwei Methoden, die zur Erzeugung von URLs verwendet werden. "url" erzeugt URLs aus dem Namen einer Route, während resource() eine URL für REST-Ressourcen erzeugt.
+
+url(:foo, :foo_id => 'fooid') => '/foo/fooid'
+resource(:stars) => '/stars'
+resource(@star) => '/stars/12'
+resource(@star, :planets) => '/stars/planets'
+resource(@star, @planet) => '/stars/planets'
 
 [Views]
 
+Im View-Layer unterscheidet sich Merb kaum von Rails. Standardmäßig werden ERb-, haml und Builder-Templates unterstützt. Mit Hilfe einer Konfigration in config/init.rb kann man den Generatoren beibringen, z.B. Standardmäßig haml-Templates zu erzeugen:
+
+use_template_engine :haml
+
+Unterschiede zu Rails finden sich im Detail in der Bennenung von vier-helper-methoden (z.B. zum Erzeugen von Formularen und Formularfeldern), so zu sehen im Beispiel x
+
+<% form_for(@star) do |f| %>
+  <p><%= f.label :name %><%= f.text_field :name %></p>
+  <p><%= f.label :owner %><%= f.text_field :owner %></p>
+  <p><%= submit_tag "Update" %></p>
+<% end %>
+
+<%= form_for(@star, :action => resource(@star)) do %>
+  <p><%= text_field :name, :label => "Name"  %></p>
+  <p><%= text_field :owner, :label => "Owner"  %></p>
+  <p><%= submit "Update" %></p>
+<% end =%>
+
+
+[Parts]
+
+In früheren Rails-Versionen gab es die sog. Komponenten, die, vor allem wegen der schlechten Performance, im Laufe der Entwicklung aus dem Rails-Core geflogen sind. Etwas ganz ähnliches gibt es, in einer performanten Variante, als Plugin für Merb, in Form der sog. Parts. Parts sind im Wesentlichen eigene Controller, die eigene View-Templates haben und dann als "Widgets" in andere Views eingebaut werden können. Beispiel 3 zeigt ein solches Part
+
+
+
 [Slices]
 
-[Components]
+Noch einen Schritt weiter in Richtung der Wiederverwendung von Komponenten gehen die sog. Slices. Slices sind komplette Merb-Applikationen, die sich als ruby-gem verpackt in eine Anwendung einbinden lassen. Ein Beispiel für eine solche Slice ist das merb-auth-slice-password gem, welches für das merb-auth-Plugin Anmelde- und Registrierungsformulare implementiert.
 
+[Deployment]
 
+Die Anbindung von Merb an Applikationswebserver basiert auf der Rack-Bibliothek von Christian Neukirchen. Für Rack existieren wiederum Anbindungen an Zahlreiche Webserver und -Umgebungen, wie z.B. Mongrel, Thin, FastCGI, SCGI, mod_passenger usw., so dass der Betrieb mindestens in allen Umgebungen, die Rails-Anwendungen unterstützen theoretisch möglich sein sollte.
 
+Für den eigentlichen Deployment-Vorgang bietet sich das im Rails-Umfeld populäre Tool Capistrano an, für welches bereits Rezepte im Merb-Wiki zu finden sind.
 
-TODO:
-  - Router
-  - Views
-  - Formhelper
-  - Slices
-  - Components
-  - Deployment
-  
+[Literatur / Hilfe]
 
+Die vorhandene Literatur und Dokumentation ist zur Zeit noch Merbs große Schwäche. 
+
+Zum Zeitpunkt da diese Worte geschrieben werden sind vier echte Bücher über Merb angekündigt, von denen zwei auch bereits im Rahmen von Early-Access-Programmen in elektronischer Form gelesen werden können. Zusätzlich schreibt Geoffrey Grossenbach noch an der finalen Version des EBooks "Meet Merb", welche spätestens bei Erscheinen dieses Artikels fertig sein sollte.
+
+Die Online-Dokumentation von Merb ist zur Zeit ebenfalls eher dürftig: Während es durchaus brauchbare (wenn auch manchmal noch etwas dünne) RDoc-Dokumentationen zu den Merb-Bibliotheken gibt, sind darüber hinaus gehende Informationen (Tutorials/Howtos) noch sehr dünn gesäht. Im Merb-Wiki gibt es durchaus schon gute Ansätze, die Konzepte von Merb zu erklären, aufgrund der hohen Fluktuation der Merb-API vor Herausgabe der Version 1.0 war es jedoch nicht möglich, diese Informationen allzuweit zu vervollständigen. Hier ist die Community gefragt, dem Beispiel von Rails zu folgen (Auch wenn manche die Dokumentation von Rails immer noch als größten Schwachpunkt sehen). 
+
+Ein Vorteil den Merb an dieser Stelle haben dürfte, ist, das die Hürde, sich in den Quelltext des Frameworks einzulesen, um eine Funktion zu verstehen, wesentlich geringer sein sollte als bei Rails.
 
 [fazit]
 
-Merb ist inzwischen ausgereift genug, um produktiv eingesetzt zu werden. Während man merkt, das die Entwickler eine Menge guter Schlüsse aus der Analyse der Probleme, die bei Rails existieren, bzw. existieren, hat Rails, was die Ausgereiftheit angeht, doch noch einen deutlichen Vorsprung. Und so lohnt sich ein Einsatz von Merb aus Sicht des Autors vor allem dann, 
+Merb ist ein ausgereiftes und durchdachtes Framework, das bereits zahlreich produktiv im Einsatz ist. Wie bei einem so jungen OpenSource-Framework nicht anders zu erwarten, erfüllen Dokumentation und Literatur noch nicht alle Ansprüche. Für Entwickler, die öfter mal an die Grenzen von Rails stoßen, oder aber sich von dem engen Korsett an Ideen und Frameworks, welches einem von Rails vorgegeben wird, eingeengt fühlt, ist Merb sicher einen Blick wert.
 
 [Mitmachen]
 
-Merb hat eine sehr aktive Entwickler-Gemeinschaft. Man wird sehr offen aufgenommen und bekommt als Mitwirkender sehr schnell Commit-Rechte auf dem gemeinsamen GitHub-Repository.
-
+Merb hat eine sehr aktive Entwickler-Gemeinschaft. Anders als Rails gibt es kein offiziell berufenes Core-Team sondern die Entwicklung wird von ein paar Mitarbeitern von Engine Yard dezentral über GitHub organisiert.
 
 [Quellen]
 
 - merb-peepcode-buch
 - merbivore.com
+- 
 
