@@ -17,7 +17,7 @@ Die Unterschiede zwischen Rails und Merb werden deutlich, wenn man sich die Ziel
 - Hackbarkeit. Es soll für die Benutzer von Merb wesentlich einfacher sein, den Quellcode von Merb zu verstehen, zu erweitern und anzupassen. Hier zahlt die bereits genannte "Keine Magie"-Strategie ein, zusätzlich gibt es sehr klare Vorgaben im Merb-Projekt, wie Code zu dokumentieren ist, ausserdem gibt es eine Unterscheidung zwischen "public" und "private" APIs, die schon in der Dokumentation deutlich machen, auf welche Konstrukte man sich langfristig verlassen kann und welche man besser nicht anfasst.
 
 
-[OR-Mapper]
+[Model / OR-Mapper]
 
 Merb ist OR-Mapper-Agnostisch. Es ist für jeden OR-Mapper nur sehr wenig Glue-Code notwendig um ihn in Merb nutzen zu können. Für Rails-Umsteiger böte sich sicher zunächst an, ActiveRecord weiter zu verwenden, was dank der des merb_activerecord-Plugins kein Problem ist. 
 
@@ -120,10 +120,89 @@ end
   puts @parent.object_id == child.parent.object_id
 end
 
+Finale Anmerkungen zu DM
+
+
+
+[Controller]
+
+Der wichtigste Unterschied von Merb-Controllern zu Rails-Controllern ist, dass der Rückgabewert einer Controller-Action automatisch als Output gerendert wird. Dies führt dazu, das sich Controller-Methoden (bzw. Actions) eher wie "echte" Methoden anfühlen und ermöglicht darüber hinaus, wie wir noch sehen werden, einige nette Konstrukte. Der Unterschied wird in Listing x und y deutlich.
+
+[Beispiel x: die einfachste Art in Rails , einen text zu rendern]
+def index
+  render :text => 'Hallo Welt'
+end
+[Beispiel y: Die selbe Action in Merb]
+def index
+ "Hallo Welt"
+end
+
+Eine "render"-Methode gibt es auch in Merb, sie funktioniert ganz ähnlich, nach den selben regeln wie in Rails wird ein passendes Template gesucht und gerendert. Nur muss man, wenn man wirklich ein Template rendern lassen will, dies eben explizit ausdrücken.
+
+def index
+  render # rendert app/views/controllername/index.html.erb
+end
+
+Auch bei merb gibt es ein Konstrukt, um eine Action Dinge mit verschiedenen Content-Types rendern zu lassen, z.B. als HTML oder als XML oder als JSON. Die Konstrukte unterscheiden sich jedoch deutlich. In Merb gibt es eine Methode namens "display", die versucht, die übergebenen Daten transparent auf die anzubietenden Content-types zu mappen. Im Beispiel X/Y sind die unterschiedlichen Vorgehensweisen zu sehen.
+
+blah blah controller #TODO echten, getesteten code
+def index
+  @stars = @universe.stars.find(:all)
+  rensponds_to do |format|
+    format.xml { @stars.to_xml }
+    format.json { @starts.to_json }
+    format.html
+  end
+end
+
+provides :xml, :json
+def index
+  @stars = @universe.stars.find(:all)
+  display @stars
+end
+
+Auch die display-Methode ruft die "to_xml" und "to_json"-Methoden auf, die Schreibweise ist jedoch erkennbar kompakter. 
+
+Die entsprechnenden Transformations-Methoden (to_xml / to_json) werden übrigens von den OR-Mappern bzw. von den Bibliotheken zur Verfügung gestellt, man kann diese natürlich auch überschreiben. 
+
+Da es Situationen gibt, in denen ein einfaches Aufrufen der Transformations-Methoden nicht ausreichen wird, kann auch eine Merb-Action abhängig vom Content-Type verzweigen, Merb bedient sich dort aber der klassischen Case-Anweisung (siehe Beispiel drei)
+
+[Beispiel 3 - Merbs variante von responds_to]
+
+case content_type 
+when :xml
+  # mehr krams hier
+  display @stars
+when :yaml 
+  display @stars
+else
+  # und noch was
+  render 
+end 
+
+[Rendern und dann noch was]
+
+Etwas, das in Rails gar nicht möglich ist, bietet die "render_and_call"-Methode, mit der man
+
+
+[Router]
+
+
+[Views]
+
+[Slices]
+
+[Components]
+
+
+
+
 TODO:
   - Router
   - Views
   - Formhelper
+  - Slices
+  - Components
   - Deployment
   
 
