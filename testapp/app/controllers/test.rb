@@ -6,4 +6,8 @@ class Test < Application
     render
   end
   
+  def test
+    "holla"
+  end
+  
 end

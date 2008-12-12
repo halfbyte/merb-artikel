@@ -1,139 +1,65 @@
-Wer heute das Stichwort Ruby hört, denkt fast immer automatisch an Ruby on Rails, das Framework für Datenbank-basierte Webanwendungen, welches sich seinen festen Platz im Web-Umfeld erobert hat und inzwischen in Version 2.2 vorliegt. Kaum eine Open-Source-Software dürfte in den letzten Jahren eine ähnliche Wirkung gehabt haben: Fast jede relevante Programmiersprache dürfte inzwischen ihren Rails-Clon haben und die Ideen, die Rails so erfolgreich gemacht haben, wie z.B. Convention Over Configuration, haben in den letzten 3 Jahren die Softwareentwicklung auch in anderen Bereichen nachhaltig verändert. Rails selbst hat sich seit der ersten Veröffentlichung in 2004 konstant weiterentwickelt und tut dies weiterhin mit recht hoher Geschwindigkeit - Zuletzt wurden insbesondere die oft kritisierten recht hohen Anforderungen an die Serverhardware, was sowohl Prozessorleistung, als auch Speicherverbrauch angeht, unter die Lupe genommen. Als eines der meist beachtesten Ergebnisse dieser Bemühungen wurde Rails 2.2 als threadsafe deklariert. Eine geeignete Umgebnung (wie z.B. JRuby) vorausgesetzt, können Rails-Anwendungen dadurch wesentlich effizienter betrieben werden.
+Die Rails-Alternative erscheint in Version 1.0
 
-Die damals fehlende Thread-Safety war es, die Ezra Zygmuntowicz im Herbst 2006 veranlasst, sich ernsthaft mit der Entwicklung einer Alternative zu Rails zu beschäftigen. Das Grundproblem: Da Rails-Anwendungen grundsätzlich immer nur einen Request pro Prozess abarbeiten können, werden insbesondere lang laufenende Requests (wie z.B. große Datei-Uploads) schnell zu einem Problem für einen Anwendungsserver, der ja nur eine endliche Zahl an Rails-Requests starten kann. 
+*Merbfresser*
 
-Im Oktober 2006 veröffentlicht Zygmuntowicz die erste, sehr minimale Version seiner Alternative, die zunächst nur einen Request-Handler für den Ruby-Webserver Mongrel darstellt, der in der Lage ist, HTML, genau wie Rails, über ERb (Embedded Ruby)-Templates auszuliefern. Er nennt das ganze Merb, was für Mongrel + Erb stehen soll.
+Ruby on Rails ist eine der einflussreichsten OpenSource-Entwicklungen der letzten Jahre - Nicht nur existieren für viele Programmiersprachen inzwischen Rails-Clones, vor allem die Paradigmen von Rails haben ihren Weg in andere Frameworks gefunden, so z.B. Convention over Configuration. Dennoch ist Rails nicht frei von Kritik: Es wird oft für zu langsam, zu komplex und zu unflexibel gehalten. Genau an dieser Stelle setzt der Rails-Konkurrent Merb an.
 
-Im November 2008, also etwas mehr als zwei Jahre später, kann Zygmuntowicz auf seinem Blog die Veröffentlichung der Version 1.0 von Merb ankündigen. Von dem anfänglichen Minimalismus ist oberflächlich nicht viel übriggeblieben, bei Merb handelt es sich inzwischen um ein ausgewachsenes Framework, welches sich im Featureumfang durchaus mit Rails messen kann.
+Wer heute eine Datenbank-Basierte Webanwendung (sagen wir, im Web 2.0-Umfeld) auf der grünen Wiese entwickeln möchte, greift in vielen Fällen zu Ruby on Rails. Das Framework, welches vom Autor David Heinemeier Hansson zum erstem Mal in 2004 veröffentlicht wurde, erfreut sich weiterhin zunehmender Beliebtheit. Es liegt inzwischen in Version 2.2 vor und ist gerade in letzter Zeit auch sehr stark in den Bereichen Performance und Speicherverbrauch optimiert worden - Die Version 2.2 ist zudem die erste Version, die, eine geeignete Umgebung vorausgesetzt (wie z.B. JRuby) multithreaded betrieben werden kann. 
 
-Die Unterschiede zwischen Rails und Merb werden deutlich, wenn man sich die Zielsetzung der Merb-Entwickler ansieht - Diese Prinzipien ziehen sich wie ein roter Faden durch das gesamte Framework:
+Genau hier setzte Ezra Zygmuntowicz an, als er sich entschied, Merb zu entwickeln. Das Grundproblem: Da Rails-Anwendungen grundsätzlich immer nur einen Request pro Prozess abarbeiten können, werden insbesondere lang laufenende Requests (wie z.B. große Datei-Uploads) schnell zu einem Problem für einen Anwendungsserver, der ja nur eine endliche Zahl an Rails-Requests starten kann. 
 
-- Optimiert für hohe Performance. Von Anfang an war es das erklärte Ziel der Entwickler, Merb deutlich performanter zu Werke gehen zu lassen als Rails. Aus diesem Ziel lassen sich viele andere Designentscheidungen ableiten. Wie bereits berichtet liegt ein Schwerpunkt der momentanen Rails-Entwicklung ebenfalls in der Verbesserung der Performance, allerdings spielte diese beim ursprünglichen Design von Rails keine so große Rolle, was die nachträgliche Optimierung oft schwierig gestaltet.
+Im Oktober 2006 veröffentlichte Zygmuntowicz die erste, sehr minimale Version seiner Alternative, die zunächst nur einen Request-Handler für den Ruby-Webserver Mongrel darstellt, der in der Lage ist, HTML, genau wie Rails, über ERb (Embedded Ruby)-Templates auszuliefern. Er taufte das ganze Merb, was für Mongrel + Erb stehen soll.
 
-- Keine Magie. Während Rails an vielen Stellen intensiven Gebrauch der Metaprogramming-Fähigkeiten von Ruby macht, wurde bei Merb versucht, weitestgehend darauf zu verzichten. Das Ergebnis ist ein Framework, dessen Quelltext deutlich einfacher lesbar ist. An vielen Stellen dürfte diese Designentscheidung auch zu Performance-Gewinnen beitragen.
+Im November 2008 erschien Merb 1.0. Inzwischen ist Merb ein komplettes Framework, dessen Benutzung sich sehr stark an Rails orientiert, aber dennoch an vielen Stelle eigene Wege geht. Dies wird klar, wenn man sich die Grundprinzipien der Merb-Entwickler ansieht:
 
-- Flexibilität. Während Rails den einen, richtigen Weg vorgibt, wie Web-Anwendungen auszusehen haben, welches Javascript-Framework zu verwenden ist, wie die Dateistruktur einer Anwendung aussieht etc., hält sich Merb an dieser Stelle vornehm zurück. Es gibt zwar auch hier Vorgaben, deren Befolgung die Entwicklung besonders schnell und komfortabel macht, aber es ist (was bei Rails so nicht der Fall ist) recht einfach, diese Vorgaben zu ignorieren, bzw. anzupassen. So existieren Anbindungen für diverse OR-Mapper (unter anderem auch Rails' ActiveRecord), Test-Frameworks (Vor allem: Test::Unit und RSpec). Ausserdem kann die Dateistruktur der Merb-Anwendungen weitgehend den eigenen Bedürfnissen angepasst werden, im Extremfall lässt sich eine Merb-Anwendung sogar in einer einzigen Datei ablegen.
+- Optimiert für hohe Performance. Von Anfang an war es das erklärte Ziel der Entwickler, Merb deutlich performanter zu Werke gehen zu lassen als Rails. Aus diesem Ziel lassen sich viele andere Designentscheidungen ableiten. Bei der Entwicklung von Rails war Performance immer nur Sekundärziel.
+
+- Weniger Magie. Während Rails an vielen Stellen intensiven Gebrauch der Metaprogramming-Fähigkeiten von Ruby macht, wurde bei Merb versucht, weitestgehend darauf zu verzichten. Das Ergebnis ist ein Framework, dessen Quelltext deutlich einfacher lesbar ist. An vielen Stellen dürfte diese Designentscheidung auch zu Performance-Gewinnen beitragen.
+
+- Flexibilität und Modularität. Während Rails einem den "Rails Way" vorgibt und es einem sehr schwer macht, z.B. einen anderen Persistenzmechanismus zu verwenden, ist Merb von vornherein flexibel ausgelegt. Man kann Merb mit unterschiedlichen Persistenz-Frameworks verwenden, man kann unterschiedliche Test-Frameworks einklinken, und sogar die Struktur der Anwendung ist in weiten Teilen anpassbar. Im Extremfall kann eine Merb-Anwendung sogar nur aus einer einzigen Datei bestehen. Erreicht wird diese Flexibilität auch durch eine sehr starke Modularisierung - Das Merb-Framework besteht aus über 20 einzelnen Komponenten, von denen man nur die jenigen verwendet, die man wirklich braucht.
 
 - Erweiterbarkeit. Es soll für die Benutzer von Merb wesentlich einfacher sein, den Quellcode von Merb zu verstehen, zu erweitern und anzupassen. Hier zahlt die bereits genannte "Keine Magie"-Strategie ein, zusätzlich gibt es sehr klare Vorgaben im Merb-Projekt, wie Code zu dokumentieren ist, ausserdem gibt es eine Unterscheidung zwischen "public" und "private" APIs, die schon in der Dokumentation deutlich machen, auf welche Konstrukte man sich langfristig verlassen kann und welche man besser nicht anfasst.
 
-[Modell / OR-Mapper]
+*Modelle und Persistenz*
 
-Die Modellschicht in Merb- sowie in Rails-Anwendungen wird in der Regel über einen Objekt-Relationalen-Mapper abgebildet. Bei Rails ist dies ActiveRecord. Merb ist zunächst ORM-Agnostisch und möchte dem Benutzer keine Vorgaben machen. Um einen ORM an Merb anzubinden ist nur ein wenig Glue-Code in Form eines Plugins notwendig. Ein solches Plugin steht für ActiveRecord zur Verfügung, so dass Umsteiger, sofern gewünscht, so weiter machen können, wie bisher.
+Die Modellschicht in Merb- sowie in Rails-Anwendungen wird in der Regel über einen Objekt-Relationalen-Mapper abgebildet, der für die Persistierung der Modellobjekte sorgt. Bei Rails ist hier ActiveRecord gesetzt. Merb macht so eine Vorgabe nicht und einen bestehenden ORM an Merb anzubinden ist nicht sehr aufwändig. Fertige Anbindungen existieren bereits für ActiveRecord (was Umsteigern den Weg erleichtern sollte) und für DataMapper, ein recht neues Projekt, welches von den Merb-Entwicklern selbst vorangetrieben wird. 
 
-Der empfohlene OR-Mapper für Merb ist allerdings DataMapper, der auch vom Merb-Team entwickelt wird. Die Benutzung von DataMapper ist für Programmierer, die sich bereits mit ActiveRecord auskennen, sehr leicht zu verstehen, allerdings gibt es ein paar Grundsätzliche Unterschiede:
+DataMapper liegen ähnliche Design-Entscheidungen zu Grunde wie auch Merb, so dass insbesondere für Entwickler mit hohen Performance-Anforderungen dieses Projekt sehr interessant sein sollte. Da DataMapper im Gegensatz zu Merb noch kein Stabiles Release hat, wurde auf eine nähere Beschreibung an dieser Stelle verzichtet.
 
-So sind DataMapper-Objekte keine Subklassen einer abstrakten Klasse (ActiveRecord::Base), sondern bekommen die Funktionalität über ein Modul injiziert, so dass man theoretisch beliebige Klassenhierarchien aufbauen und über DataMapper persistieren kann.
+*Controller*
 
-Bei DataMapper werden die Datenbank-Tabellen durch Definitionen im Modell festgelegt, und nicht, wie bei ActiveRecord die Modell-Attribute durch die Struktur der Datenbank-Tabellen. So ist in DataMapper-Objekten die Information über die Datenstruktur an einer Stelle gebündelt. In Rails hingegen müssen alle Informationen, die über bloße Spalteninformationen hinausgehen, wie z.B. Assoziationen, in der Modellklasse definiert werden, die Informationen sind also verteilt zwischen Datenbankschema und Modellklasse. Siehe Beispiele 1 und 2. DataMapper kann nun, ausgehend von den Attribut-Definitionen in den Modell-Klassen automatisch die Datenbank-Tabellen erzeugen, ohne dass wie bei ActiveRecord eine Migration erzeugt werden muss. Diese Auto-Migrationen können sowohl Destruktiv (durch komplettes Löschen und Neu anlegen der Tabelle) als auch Non-Destruktiv durchgeführt werden (durch ALTER TABLE-Aufrufe oder ähnliches), wobei letztere Variante nicht immer zum gewünschten Ergebnis führt. Daher kennt auch DataMapper manuelle Migrationen (Beispiel 3), auch um so z.B. zusätzliche Daten-Migrationen vorzunehmen. Im produktiven Betrieb wird man die Auto-Migrationen wohl selten einsetzen können.
+Der erste Unterschied von Merb- zu Rails-Controllern ist, dass die Merb-Action-Methoden ihren Rückgabewert als Response-Body an den Browser senden. Eine Action-Methode in Merb fühlt sich also mehr wie eine echte Methode an. Mit Hilfe des Plugins "merb-action-args", welches Bestandteil der Merb-Distribution ist, kann dieser Eindruck sogar noch gesteigert werden, in dem auch die Request-Parameter per Methoden-Parameter übergeben werden. Der komplette Unterschied ist in Beispiel 1 und 2 zu sehen.
 
-Weitere Unterschiede finden sich in der Art und Weise, wie Validierungen auf Modellen definiert werden - Hier bietet DataMapper die Möglichkeit, die oben gezeigten property-Definitionen um Validierungsinformationen zu ergänzen, was sehr übersichtlich ist. (Siehe Beispiel XXX auf der name-property) Zusätzlich kann man allerdings auch die aus ActiveRecord bekannten validates* methoden (Die etwas anders benannt sind) verwenden.
-
-[Beispiel 1 (Active Record-Migration und Klassendefinition)]
-
-# Datei: db/migrate/20080729095225_create_universes.rb
-class CreateUniverses < ActiveRecord::Migration
-  def self.up
-    create_table :universes do |t|
-      t.text :name
-      t.timestamps
-    end
-  end
-  
-  def self.down
-    drop_table :universes
+[Beispiel 1: die einfachste Art in Rails , einen text zu rendern]
+class HelloWorldController < ApplicationController
+  def hello_world
+    render :text => 'Hallo Welt, Hallo' + params[:name]
   end
 end
-------------
-# Datei: db/migrate/20080729095236_create_stars.rb
-class CreateStars < ActiveRecord::Migration
-  def self.up
-    create_table :stars do |t|
-      t.text :name
-      t.integer :universe_id
-      t.float :color
-      t.float :x
-      t.float :y
-      t.timestamps
-    end
-  end
-  def self.down
-    drop_table :stars
-  end
-end
-------------
-# Datei: app/models/universe.rb
-class Universe < ActiveRecord::Base
-  has_many :stars
-end
-------------
-# Datei: app/models/stars.rb
-class Stars < ActiveRecord::Base
-  belongs_to :universe
-end
-
-[Beispiel 2: Datamapper Klassendefinition]
-
-# Datei: app/models/universe.rb
-class Universe
-  include DataMapper::Resource
-  property :id, Serial
-  property :name, String
-  has n, :stars
-end
-------------
-# Datei: app/models/star.rb
-class Star
-  include DataMapper::Resource
-  property :id, Serial
-  property :name, String, :length => (3..20)
-  property :color, Float
-  property :x, Float
-  property :y, Float
-  belongs_to :universe
-end
-
-
-[Beispiel 3: DataMapper-Migration]
-# Datei: schema/migrations/001_add_color_to_stars.rb
-migration 1, :add_color_to_stars  do
-  up do
-    modify_table :stars do |table|
-      table.add_column :color, Float
-    end
-  end
-  down do
-    modify_table :stars do |table|
-      table.drop_column :color
-    end    
+[Beispiel 2: Die selbe Action in Merb]
+class HelloWorld < Application
+  def hello_world(name)
+   "Hallo Welt, Hallo #{name}"
   end
 end
 
+Eine "render"-Methode gibt es auch in Merb, sie funktioniert auch ganz ähnlich, nach den selben regeln wie in Rails wird ein passendes Template gesucht und gerendert. 
 
-
-[Controller]
-
-Der wichtigste Unterschied von Merb-Controllern zu Rails-Controllern ist, dass der Rückgabewert einer Controller-Action automatisch als Output gerendert wird. Dies führt dazu, das sich Controller-Methoden (bzw. Actions) eher wie "echte" Methoden anfühlen.
-
-[Beispiel x: die einfachste Art in Rails , einen text zu rendern]
-def index
-  render :text => 'Hallo Welt'
-end
-[Beispiel y: Die selbe Action in Merb]
-def index
- "Hallo Welt"
+[Beispiel 3: ein expliziter aufruf von render ist nötig um ein template zu rendern]
+class HelloWorld < Application
+  def index
+    render # rendert app/views/hello_world/index.html.erb
+  end
 end
 
-Eine "render"-Methode gibt es auch in Merb, sie funktioniert ganz ähnlich, nach den selben regeln wie in Rails wird ein passendes Template gesucht und gerendert. Nur muss man, wenn man wirklich ein Template rendern lassen will, dies eben explizit ausdrücken.
+*Biete: JSON*
 
-def index
-  render # rendert app/views/controllername/index.html.erb
-end
+Ein beliebtes Feature in Rails ist das ausliefern unterschiedlicher Content-Types je nach Anfrage des Browsers, um z.B. einfache Webservice-APIs bereitzustellen. In Merb ist dieses Feature ebenfalls vorhanden, allerdings anders implementiert: Die Methode "display" versucht, die übergebenen Daten transparent auf die Content-Types zu mappen, wenn kein entsprechendes Template vorhanden ist. Im Beispiel 
 
-[Biete: XML]
+Auch bei merb gibt es ein Konstrukt, um eine Action Dinge mit verschiedenen Content-Types rendern zu lassen, z.B. als HTML oder als XML oder als JSON. Die Konstrukte unterscheiden sich jedoch deutlich. In Merb gibt es eine Methode namens "display", die versucht, die übergebenen Daten transparent auf die anzubietenden Content-types zu mappen. Im Beispiel 4 und 5 sind die unterschiedlichen Vorgehensweisen zu sehen. Mit "provides" kann der Controller festlegen, für welche Content-Types er sich zuständig fühlt.
 
-Auch bei merb gibt es ein Konstrukt, um eine Action Dinge mit verschiedenen Content-Types rendern zu lassen, z.B. als HTML oder als XML oder als JSON. Die Konstrukte unterscheiden sich jedoch deutlich. In Merb gibt es eine Methode namens "display", die versucht, die übergebenen Daten transparent auf die anzubietenden Content-types zu mappen. Im Beispiel X/Y sind die unterschiedlichen Vorgehensweisen zu sehen.
---- RAILS ---
-StarsController < ApplicationController
+[ Beispiel 4: Ein Rails-Controller mit respond_to-Block]
+class StarsController < ApplicationController
   def index
     @stars = @universe.stars.find(:all)
     rensponds_to do |format|
@@ -143,7 +69,7 @@ StarsController < ApplicationController
     end
   end
 end
----  MERB ---
+[ Beispiel 5: Ein Merb-Controller mit provides und display]
 class Stars < Application
   provides :xml, :json
   def index
@@ -154,144 +80,111 @@ end
 
 Auch die display-Methode ruft die "to_xml" und "to_json"-Methoden auf, die Schreibweise ist jedoch erkennbar kompakter. 
 
-Die entsprechnenden Transformations-Methoden (to_xml / to_json) werden übrigens von den OR-Mappern bzw. von den Bibliotheken zur Verfügung gestellt, man kann diese natürlich auch überschreiben. 
+Die entsprechnenden Transformations-Methoden (to_xml / to_json) werden übrigens für die übliche Content-Types (xml, json, yaml, etc.) von dem ORMs oder von zusätzlichen Bibliotheken transparent zur Verfügung gestellt.
 
-Da es Situationen gibt, in denen ein einfaches Aufrufen der Transformations-Methoden nicht ausreichen wird, kann auch eine Merb-Action abhängig vom Content-Type verzweigen, Merb bedient sich dort aber der klassischen Case-Anweisung (siehe Beispiel drei)
+Da es Situationen gibt, in denen ein einfaches Aufrufen der Transformations-Methoden nicht ausreichen wird, kann auch eine Merb-Action abhängig vom Content-Type verzweigen, Merb bedient sich dort aber der klassischen Case-Anweisung (siehe Beispiel 6)
 
-[Beispiel 3 - Merbs variante von responds_to]
+[Beispiel 6 - Merbs variante von responds_to]
 
-def index
-  case content_type 
-  when :xml
-    # mehr krams hier
-    display @stars
-  when :yaml 
-    display @stars
-  else
-    # und noch was
-    render 
-  end 
+class Stars < Application
+  def index
+    case content_type 
+    when :xml
+      # mehr krams hier
+      display @stars
+    when :yaml 
+      display @stars
+    else
+      # und noch was
+      render 
+    end 
+  end
 end
 
-[Rendern und dann noch was]
+*Feuern und vergessen*
 
-Etwas, das in Rails gar nicht möglich ist, bietet die "render_then_call"-Methode, mit der man Prozesse, die an einer Action hängen, erst nach dem Ausliefern einer Antwortseite ausführen kann. Dies ist in Rails nur mit speziellen Lösungen wie BackgroundJob / DelayedJob etc. möglich.
+Ein Merb-eigenes Feature, das keine Entsprechung in Rails hat, bietet die Methode "render_then_call", mit der man einen Code-Block ausführen lassen kann, nachdem die Response bereits zum Client geschickt wurde. Dies eignet sich allerdings nur für kurz laufende Prozesse, länger laufende Vorgänge stößt man, ähnlich wie in Rails, besser über eine Queue an (wie z.B. ActiveMQ oder Starling)
 
-def show
-  render_then_call(display @star) do
-		Stats.tick(@star)
-	end
+
+[Beispiel 7: render_then_call]
+class Stars < Application
+  def show
+    render_then_call(display @star) do
+  		Stats.tick(@star)
+  	end
+  end
 end
 
-Allerding sollte man darauf achten, dass diese Methoden weiterhin im Kontext des Merb-Prozesses laufen und sich daher diese Variante nur für kurzlaufende Prozesse eignet, mit deren Ausführung man dennoch nicht die Auslieferung zum Client behindern möchte. Länger laufende Prozesse werden dann besser wieder über z.B. über Queues gelöst.
-
-Zuletzt noch ein Hinweis auf ein sehr interessantes Merb-Plugin namens merb-action-args, welches standardmäßig mit Merb 1.0 installiert wird. Dieses ermöglicht es, Request-Parameter direkt als Methoden-Parameter zu empfangen.
-
-def show
-  display Start.find(params[id])
-end
-
-def show(id)
-  display Star.find(id)
-end
-
-[Router]
+*Von URLs zu Actions*
 
 Der Router regelt die Zuordnung von URLs zu Controller-Klassen, Methoden und Parametern. Das Routing von Merb ist deutlich flexibler als jenes in Rails und dazu noch performanter umgesetzt. 
 
-Die Syntax zur Erzeugung von Routen ist etwas anders als in Rails, zumindest für Nicht-REST-Routen, ist aber doch recht einfach verständlich, wenn man die Rails-Routen kennt. Eine vollständige Beschreibung der Funktionalität des Routers würde den Rahmen dieses Artikels sprengen, daher nur kurz ein paar Beispiele:
+Die Syntax zur Erzeugung von Routen ist etwas anders als in Rails. Eine vollständige Beschreibung der Funktionalität des Routers würde wiederum den Rahmen dieses Artikels sprengen, daher nur kurz ein paar Beispiele (Beispiel 8). Die ersten beiden Beispiele mappen eine URL vom Schema "/foo/bar" auf die show-Action im Foo-Controller und weist den Teil "bar" der URL einem Request-Parameter "foo_id" zu.
 
---- RAILS ---
-map.foo "/foo/:foo_id", :controller => 'foo', :action => :show
+Zusätzlich können in "match"-Methode auch andere Bestandteile eines Requests herangezogen werden, wie das dritte Beispiel (ohne Entsprechung in Rails) zeigt. Verwendbar sind alle Eigenschaften eines Request-Objekts, im Beispiel wird gegen den User-Agent verglichen.
 
---- MERB ---
-match("/foo/:foo_id").to(:controller => 'foo', :action => :show).name(:foo)
+Genau wie bei Rails ist es möglich, REST-Ressourcen zu definieren und sogar zu verschachteln. Auch hier ist die Syntax leicht anders (Beispiel 8)
 
-Erläuterung: Der Parameter :foo_id wird automatisch aus der URL extrahiert und dem Request als Parameter angefügt.
-
-Zusätzlich zu dieser einfachen Variante kann man nun dem match-Aufruf aber auch noch weitere Parameter als Hash übergeben, so z.B.:
-
-match(:path => "/foo", :user_agent => /iPhone/).to(:controller => 'foo', :action => :index_for_iphone)
-
-Als Parameter können hier alle Methoden, die im Request-Objekt zur Verfügung gestellt werden benutzt werden, z.B. :domain, :subdomains, :user_agent, etc.
-
-Genau wie bei Rails ist es möglich, REST-Ressourcen zu definieren und sogar zu verschachteln. Auch hier ist die Syntax leicht anders.
-
---- RAILS ---
+[Beispiel 8: REST-Routen in Rails und Merb]
+# Ressourcen in Rails
 map.resources :stars do |star|
   star.resources :planets
 end
 
---- MERB ---
+# Ressourcen in Merb
 resources :stars do
   resources :planets
 end
 
-[Erzeugung von URLs]
+*Erzeugung von URLs*
 
-Anders als bei Rails werden durch den Router keine benannten Methoden erzeugt. Statt dessen gibt es zwei Methoden, die zur Erzeugung von URLs verwendet werden. "url" erzeugt URLs aus dem Namen einer Route, während resource() eine URL für REST-Ressourcen erzeugt.
+Anders als bei Rails werden durch den Merb-Router keine benannten Methoden erzeugt. Statt dessen gibt es zwei Methoden, die zur Erzeugung von URLs verwendet werden. "url" erzeugt URLs aus dem Namen einer Route, während resource() eine URL für REST-Ressourcen erzeugt. Das Beispiel 9 harmoniert mit den in Beispiel 7 und 8 generierten Routes.
 
+[Beispiel 9: URL-Helper in Merb]
 url(:foo, :foo_id => 'fooid') => '/foo/fooid'
 resource(:stars) => '/stars'
 resource(@star) => '/stars/12'
 resource(@star, :planets) => '/stars/planets'
 resource(@star, @planet) => '/stars/planets'
 
-[Views]
+*Views und Templates*
 
-Im View-Layer unterscheidet sich Merb kaum von Rails. Standardmäßig werden ERb-, haml und Builder-Templates unterstützt. Mit Hilfe einer Konfigration in config/init.rb kann man den Generatoren beibringen, z.B. Standardmäßig haml-Templates zu erzeugen:
+Im View-Layer unterscheidet sich Merb kaum von Rails. Standardmäßig werden ERb-, haml- und Builder-Templates unterstützt. Mit Hilfe einer Konfigration in config/init.rb kann man den Generatoren beibringen, z.B. Standardmäßig haml-Templates zu erzeugen (Beispiel 10)
 
+[Beispiel 10: Konfiguration der Default-Template-Engine]
+# config/init.rb
 use_template_engine :haml
 
-Unterschiede zu Rails finden sich im Detail in der Bennenung von vier-helper-methoden (z.B. zum Erzeugen von Formularen und Formularfeldern), so zu sehen im Beispiel x
+Unterschiede zu Rails finden sich auch im Detail in der Benennung von vier-helper-methoden, z.B. zum Erzeugen von Formularen und Formular-Feldern.
 
-<% form_for(@star) do |f| %>
-  <p><%= f.label :name %><%= f.text_field :name %></p>
-  <p><%= f.label :owner %><%= f.text_field :owner %></p>
-  <p><%= submit_tag "Update" %></p>
-<% end %>
+*Wiederverwendung mit Parts und Slices*
 
-<%= form_for(@star, :action => resource(@star)) do %>
-  <p><%= text_field :name, :label => "Name"  %></p>
-  <p><%= text_field :owner, :label => "Owner"  %></p>
-  <p><%= submit "Update" %></p>
-<% end =%>
-
-
-[Parts]
-
-In früheren Rails-Versionen gab es die sog. Komponenten, die, vor allem wegen der schlechten Performance, im Laufe der Entwicklung aus dem Rails-Core geflogen sind. Etwas ganz ähnliches gibt es, in einer performanten Variante, als Plugin für Merb, in Form der sog. Parts. Parts sind im Wesentlichen eigene Controller, die eigene View-Templates haben und dann als "Widgets" in andere Views eingebaut werden können. Beispiel 3 zeigt ein solches Part
-
-TODO
-
-
-[Slices]
+In früheren Rails-Versionen gab es die sog. Components, die, vor allem wegen der schlechten Performance, im Laufe der Zeit aus dem Rails-Core geflogen sind. Etwas ganz ähnliches gibt es, als Plugin für Merb, in Form der sog. Parts. Parts sind im Wesentlichen eigene Controller, die eigene View-Templates haben und dann als "Widgets" in andere Views eingebaut werden können. 
 
 Noch einen Schritt weiter in Richtung der Wiederverwendung von Komponenten gehen die sog. Slices. Slices sind komplette Merb-Applikationen, die sich als ruby-gem verpackt in eine Anwendung einbinden lassen. Ein Beispiel für eine solche Slice ist das merb-auth-slice-password gem, welches für das merb-auth-Plugin Anmelde- und Registrierungsformulare implementiert.
 
-[Deployment]
+*Deployment*
 
-Die Anbindung von Merb an Applikationswebserver basiert auf der Rack-Bibliothek von Christian Neukirchen. Für Rack existieren wiederum Anbindungen an Zahlreiche Webserver und -Umgebungen, wie z.B. Mongrel, Thin, FastCGI, SCGI, mod_passenger usw., so dass der Betrieb mindestens in allen Umgebungen, die Rails-Anwendungen unterstützen theoretisch möglich sein sollte. Insbesondere laufen Merb-Anwendungen auch unter dem unlängst populär gewordenen Apache-Modul "mod_phusion", welches Rails- und Rack-Anwendungen vollautomatisch und transparent managed.
+Durch die Verwendung der Rack-Schnittstelle ist Merb sehr flexibel deploybar, unter anderem mit Mongrel, dem auch im Rails-Umfeld beliebten Ruby-App-Server, aber auch über FastSGI, mit Thin oder dem inzwischen sehr beliebten mod_passenger, einem Apache-Modul, welches die Anwendungsprozesse selbsständig managed.
 
 Für den eigentlichen Deployment-Vorgang bietet sich das im Rails-Umfeld populäre Tool Capistrano an, für welches bereits Rezepte im Merb-Wiki zu finden sind.
 
-[Literatur / Hilfe]
-
-Die vorhandene Literatur und Dokumentation ist zur Zeit noch die große Schwäche von Merb.
+*Literatur / Hilfe*
 
 Zum Zeitpunkt da dieser Artikel verfasst wird, sind vier echte Bücher über Merb angekündigt, von denen zwei auch bereits im Rahmen von Early-Access-Programmen in elektronischer Form gelesen werden können. Zusätzlich schreibt Geoffrey Grossenbach von Peepcode.com noch an der finalen Version des EBooks "Meet Merb", welche spätestens bei Erscheinen dieses Artikels fertig sein sollte. Ebenfalls von Peepcode.com stammt ein einstündiger Screencast, der zum Erscheinen von Merb 1.0 aktualisiert wurde. Zuletzt erwähnenswert: Das offene Merb-Buch-Projekt von Matt Aimonetti, an dem man über Github auch selbst weiterschreiben kann.
 
-Die Online-Dokumentation von Merb ist zur Zeit ebenfalls eher dürftig: Während es durchaus brauchbare (wenn auch manchmal noch etwas dünne) RDoc-Dokumentationen zu den Merb-Bibliotheken gibt, sind darüber hinaus gehende Informationen (Tutorials/Howtos) noch sehr dünn gesäht. Im Merb-Wiki gibt es durchaus schon gute Ansätze, die Konzepte von Merb zu erklären, aufgrund der hohen Fluktuation der Merb-API vor Herausgabe der Version 1.0 war es jedoch nicht möglich, diese Informationen allzuweit zu vervollständigen. Hier ist die Community gefragt, dem Beispiel von Rails zu folgen (Auch wenn manche die Dokumentation von Rails immer noch als größten Schwachpunkt sehen). 
+Die Online-Dokumentation von Merb ist zur Zeit eher dürftig: Die von Rails bekannten RDoc-Dokumentationen sind vorhanden, aber an vielen Stellen noch etwas dürftig. Darüber hinaus gehende Informationen (Tutorials/Howtos) sind noch sehr dünn gesäht. Im Merb-Wiki gibt es durchaus schon gute Ansätze, die Konzepte von Merb zu erklären, so dass man davon ausgehen kann, das sich dieser Kritikpunkt relativieren wird.
 
-Ein Vorteil den Merb an dieser Stelle haben dürfte, ist, das die Hürde, sich in den Quelltext des Frameworks einzulesen, um eine Funktion zu verstehen, wesentlich geringer sein sollte als bei Rails.
+*Community*
 
-[fazit]
+Merb hat eine sehr aktive und offene Entwickler-Gemeinschaft. Anders als Rails gibt es kein offiziell berufenes Core-Team. Die Entwicklung wird dezentral über GitHub organisiert und Entwickler, die gute Patches beisteuern, bekommen recht schnell Commit-Rechte.
 
-Merb ist ein ausgereiftes und durchdachtes Framework, das bereits zahlreich produktiv im Einsatz ist. Wie bei einem so jungen OpenSource-Framework nicht anders zu erwarten, erfüllen Dokumentation und Literatur noch nicht alle Ansprüche. Für Entwickler, die öfter mal an die Grenzen von Rails stoßen, oder aber sich von dem engen Korsett an Ideen und Frameworks, welches einem von Rails vorgegeben wird, eingeengt fühlt, ist Merb sicher einen Blick wert.
+*Fazit*
 
-[Mitmachen]
+Merb schafft es, Rails ähnlich genug zu sein um Rails-Entwickler nicht zu verschrecken, bietet aber an vielen Stellen neue Ansätze und lohnt sich vor allem für Entwickler, die sich vom starren Rails-Korsett eingeengt fühlen. Denn neben einem Rails-Ersatz ist Merb vor allem ein sehr anpassungs- und wandlungsfähiges Framework, das von sehr klein (Eine Datei per Anwendung) nach sehr groß skaliert. Sicher bedingt durch das junge Alter des Frameworks hapert es noch an der einen oder anderen Stelle (Dokumentation!), so dass Merb gerade für Anfänger noch keine uneingeschränkte Empfehlung ist.
 
-Merb hat eine sehr aktive Entwickler-Gemeinschaft. Anders als Rails gibt es kein offiziell berufenes Core-Team sondern die Entwicklung wird von ein paar Mitarbeitern von Engine Yard dezentral über GitHub organisiert und Entwickler, die gute Patches beisteuern, bekommen recht schnell Commit-Rechte.
+[Mitmachen
+
 
 [Quellen, Literatur]
 
@@ -302,5 +195,3 @@ Merb hat eine sehr aktive Entwickler-Gemeinschaft. Anders als Rails gibt es kein
 - http://my.safaribooksonline.com/9780321601636 (Das "The Merb Way"-Buch)
 - http://www.apress.com/book/view/9781430218234 (Das "Beginning Merb"-Buch)
 - http://apress.com/book/view/9781430218654 (Das "Merb: What you need to know"-Buch)
-
-
